@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spacemon
+  labels:
+    com.theguardian.app: Multimedia
+    com.theguardian.stack: spacemon
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5 #clean up replica sets older than this
+  selector:
+    matchLabels:
+      com.theguardian.app: Multimedia
+      com.theguardian.stack: spacemon
+  template:
+    metadata:
+      labels:
+        com.theguardian.app: Multimedia
+        com.theguardian.stack: spacemon
+    spec:
+      nodeSelector:
+        has-san: "true"
+      containers:
+      - image: published-image-here
+        name: spacemon
+        securityContext:
+          allowPrivilegeEscalation: false
+        env:
+          - name: ELASTICSEARCH_HOST
+            value: elasticsearch:9200
+          - name: SLEEP_TIME
+            value: "120"
+          - name: FILTER
+            value: "/srv"
+        #mount the volumes you want to scan here
+        #volumeMounts:
+      #configure the volumes that you want to scan as hostPath volumes here,
+      #then mount them above in volumeMounts
+      #volumes:
+
+      restartPolicy: Always
