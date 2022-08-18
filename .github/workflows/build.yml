@@ -1,0 +1,19 @@
+name: Build on push
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - run: docker build . -t guardianmultimedia/spacemon:${{ github.run_number }}
+      - run: docker push guardianmultimedia/spacemon:${{ github.run_number }}
